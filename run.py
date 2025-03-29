@@ -293,7 +293,7 @@ async def addon_stream(request: Request,config, type, id,):
         elif "tt" in id or "tmdb" in id or "kitsu" in id:
             
             print(f"Handling movie or series: {id}")
-            if "kitsu" in id or "tmdb" in id:
+            if "kitsu" in id:
                 if provider_maps['ANIMEWORLD'] == "1" and AW == "1":
                     animeworld_urls = await animeworld(id,client)
                     if animeworld_urls:
