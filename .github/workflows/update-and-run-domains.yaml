@@ -38,7 +38,7 @@ jobs:
         git config --global user.name "${{ secrets.GIT_USERNAME }}"
         git config --global user.email "${{ secrets.GIT_EMAIL }}"
 
-    - name: Commit e push delle modifiche (se necessario)
+    - name: Commit e push delle modifiche a update_domains.py (se necessario)
       if: env.files_are_identical == 'false'
       run: |
         git add update_domains.py
@@ -55,15 +55,13 @@ jobs:
       run: |
         python3 update_domains.py
 
-    - name: Aggiorna il file config.json e committa (se necessario)
+    - name: Committa e pusha il file config.json aggiornato
       run: |
-        if [ -f temp_repo/config.json ]; then
-          cp temp_repo/config.json config.json
+        if [ -f config.json ]; then
           git add config.json
-          git commit -m "Aggiornamento automatico di config.json"
+          git commit -m "Aggiornamento automatico di config.json con la nuova configurazione"
           git push origin main
         else
-          echo "File config.json non trovato nella repository remota, nessuna modifica apportata."
-        fi
+          echo "File config.json non trovato, nessuna modifica apportata."
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
