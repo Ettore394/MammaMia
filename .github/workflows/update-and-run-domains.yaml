@@ -33,6 +33,11 @@ jobs:
       run: |
         cp temp_repo/update_domains.py update_domains.py
 
+    - name: Configura Git
+      run: |
+        git config --global user.name "${{ secrets.GIT_USERNAME }}"
+        git config --global user.email "${{ secrets.GIT_EMAIL }}"
+
     - name: Commit e push delle modifiche (se necessario)
       if: env.files_are_identical == 'false'
       run: |
