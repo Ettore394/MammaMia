@@ -55,25 +55,15 @@ jobs:
       run: |
         python3 update_domains.py
 
-    - name: Confronta il file config.json
-      id: compare-config
+    - name: Aggiorna il file config.json e committa (se necessario)
       run: |
-        if diff temp_repo/config.json config.json > /dev/null; then
-          echo "config_is_identical=true" >> $GITHUB_ENV
+        if [ -f temp_repo/config.json ]; then
+          cp temp_repo/config.json config.json
+          git add config.json
+          git commit -m "Aggiornamento automatico di config.json"
+          git push origin main
         else
-          echo "config_is_identical=false" >> $GITHUB_ENV
+          echo "File config.json non trovato nella repository remota, nessuna modifica apportata."
         fi
-
-    - name: Aggiorna il file config.json (se necessario)
-      if: env.config_is_identical == 'false'
-      run: |
-        cp temp_repo/config.json config.json
-
-    - name: Commit e push delle modifiche al file config.json (se necessario)
-      if: env.config_is_identical == 'false'
-      run: |
-        git add config.json
-        git commit -m "Aggiornamento automatico di config.json"
-        git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
