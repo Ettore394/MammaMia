@@ -1,0 +1,51 @@
+name: Update, Sync, and Run update_domains.py
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # Esegue ogni giorno alle 1:00 AM UTC
+  workflow_dispatch: # Permette di eseguire manualmente il workflow
+
+jobs:
+  update-domains:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout this repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Clona la repository di emaschi5/MammaMia
+      run: |
+        git clone https://github.com/emaschi5/MammaMia.git temp_repo
+
+    - name: Confronta i file
+      id: compare-files
+      run: |
+        if diff temp_repo/update_domains.py update_domains.py > /dev/null; then
+          echo "files_are_identical=true" >> $GITHUB_ENV
+        else
+          echo "files_are_identical=false" >> $GITHUB_ENV
+        fi
+
+    - name: Aggiorna il file update_domains.py (se necessario)
+      if: env.files_are_identical == 'false'
+      run: |
+        cp temp_repo/update_domains.py update_domains.py
+
+    - name: Commit e push delle modifiche (se necessario)
+      if: env.files_are_identical == 'false'
+      run: |
+        git add update_domains.py
+        git commit -m "Aggiornamento automatico di update_domains.py"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Esegui update_domains.py
+      run: |
+        python3 update_domains.py
+
+    - name: Pulisci la directory temporanea
+      run: |
+        rm -rf temp_repo
