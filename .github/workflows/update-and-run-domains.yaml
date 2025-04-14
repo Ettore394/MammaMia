@@ -26,6 +26,7 @@ jobs:
           echo "files_are_identical=true" >> $GITHUB_ENV
         else
           echo "files_are_identical=false" >> $GITHUB_ENV
+        fi
 
     - name: Aggiorna il file update_domains.py (se necessario)
       if: env.files_are_identical == 'false'
@@ -58,6 +59,7 @@ jobs:
           echo "config_modified=true" >> $GITHUB_ENV
         else
           echo "config_modified=false" >> $GITHUB_ENV
+        fi
 
     - name: Committa e pusha il file config.json aggiornato (se modificato)
       if: env.config_modified == 'true'
