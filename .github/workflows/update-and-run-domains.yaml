@@ -47,10 +47,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Esegui update_domains.py
-      run: |
-        python3 update_domains.py
-
     - name: Pulisci la directory temporanea
       run: |
         rm -rf temp_repo
+
+    - name: Esegui update_domains.py
+      run: |
+        python3 update_domains.py
